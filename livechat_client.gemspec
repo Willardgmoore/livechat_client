@@ -18,6 +18,7 @@ Gem::Specification.new do |g|
   g.required_ruby_version = ">= 1.8.7"
   g.required_rubygems_version = ">= 1.3.6"
 
+  g.add_runtime_dependency "pry"
   g.add_development_dependency "rake"
   g.add_development_dependency "rspec"
   g.add_development_dependency "webmock", "~> 1.9.0"

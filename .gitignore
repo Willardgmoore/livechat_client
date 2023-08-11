@@ -1,4 +1,5 @@
 /.bundle
 /vendor
 .yardoc
+.idea
 doc/
