@@ -24,8 +24,8 @@ require 'livechat/V3.5/rest/client'
 $HOST = "https://api.livechatinc.com/"
 $API_VERSION = 3.5
 
-def endpoint_path(section, endpoint)
+def endpoint_path(section, endpoint, api_version = $API_VERSION)
   valid = ['agent', 'configuration', 'customer'].include?(section)
   raise Exception unless valid
-  $HOST + "v#{$API_VERSION}/#{section}/action/" + endpoint
+  $HOST + "v#{api_version}/#{section}/action/" + endpoint
 end

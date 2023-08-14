@@ -31,7 +31,7 @@ module LiveChat
       configuration_api_endpoints = %w(agents auto_access bots groups properties tags webhooks)
       agent_chat_api_endpoints = %w(chats threads archives events properties)
 
-      %w(agents auto_access bots groups properties tags webhooks).each do |r|
+      %w(agent agents auto_access bot bots group groups properties tags webhooks).each do |r|
         define_method(r.to_sym) do |*args|
           klass = LiveChat::REST.const_get restify(r.capitalize)
           n = klass.new(args[0], self)
@@ -51,9 +51,8 @@ module LiveChat
       def initialize(options={})
         yield options if block_given?
         @config = DEFAULTS.merge! options
-        @login = @config[:login].strip
-        @api_key = @config[:api_key].strip
-        raise ArgumentError, "Login and API key are required!" unless @login and @api_key
+        set_credentials
+        set_license_and_org_id
         set_up_connection
       end
 
@@ -84,7 +83,7 @@ module LiveChat
         request_type = Net::HTTP.const_get method.capitalize
         request = request_type.new url, HTTP_HEADERS
         request.basic_auth @login, @api_key
-        request.body = params.to_json
+        request.body = params.to_json if [:post].include? method
 
         connection = Net::HTTP.start(url.host, url.port, use_ssl: true)
         return connection.request(request)
@@ -100,6 +99,44 @@ module LiveChat
       end
 
       private
+
+      def set_credentials
+        @login = @config[:login].strip
+        @api_key = @config[:api_key].strip
+        raise ArgumentError, "Login and API key are required!" unless @login and @api_key
+      end
+
+      def set_license_and_org_id
+        get_license_id
+        get_org_id
+        raise ArgumentError, "License or Organization Id are required!" unless $LICENSE_ID and $ORGANIZATION_ID
+      end
+
+      def get_license_id
+        $LICENSE_ID ||= @config[:license_id].strip
+        return $LICENSE_ID if $LICENSE_ID.present?
+
+        path = endpoint_path('configuration', 'get_license_id', 3.4)
+        url = URI.parse(path)
+        params = {organization_id: @config[:organization_id].strip}
+        url.query = URI.encode_www_form(params)
+
+        response = self.request(url, params, :get)
+        $LICENSE_ID = JSON.parse(response.body)['license_id']
+      end
+
+      def get_org_id()
+        $ORGANIZATION_ID ||= @config[:organization_id].strip
+        return $ORGANIZATION_ID if $ORGANIZATION_ID.present?
+
+        path = endpoint_path('configuration', 'get_organization_id', 3.4)
+        url = URI.parse(path)
+        params = {license_id: @config[:license_id].strip}
+        url.query = URI.encode_www_form(params)
+
+        response = self.request(url, params, :get)
+        $ORGANIZATION_ID = JSON.parse(response.body)['organization_id']
+      end
 
       def valid_request?(request)
         headers = request.to_hash
