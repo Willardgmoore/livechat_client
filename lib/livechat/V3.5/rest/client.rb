@@ -31,7 +31,7 @@ module LiveChat
       configuration_api_endpoints = %w(agents auto_access bots groups properties tags webhooks)
       agent_chat_api_endpoints = %w(chats threads archives events properties)
 
-      %w(agent agents auto_access bot bots group groups properties tags webhooks).each do |r|
+      %w(agent agents auto_access bot bots chats group groups properties tags threads webhooks).each do |r|
         define_method(r.to_sym) do |*args|
           klass = LiveChat::REST.const_get restify(r.capitalize)
           n = klass.new(args[0], self)

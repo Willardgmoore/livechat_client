@@ -20,6 +20,8 @@ require 'livechat/V3.5/rest/reports'
 require 'livechat/V3.5/rest/status'
 require 'livechat/V3.5/rest/visitors'
 require 'livechat/V3.5/rest/client'
+require 'livechat/V3.5/rest/threads'
+require 'livechat/V3.5/rest/tags'
 
 $HOST = "https://api.livechatinc.com/"
 $API_VERSION = 3.5

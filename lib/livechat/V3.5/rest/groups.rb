@@ -6,10 +6,10 @@ module LiveChat
         @path, @client = path, client
       end
 
-      def list(params)
+      def list
         @path ||= endpoint_path('configuration', 'list_groups')
         url = URI.parse(@path)
-        params ||= {
+        params = {
           "fields": ["agent_priorities", "routing_status"]
         }
         # binding.pry
