@@ -7,7 +7,7 @@ module LiveChat
         @path, @client = path, client
       end
 
-      def list(params = {}, full_path=false)
+      def list(params=nil, full_path=false)
         params ||=
           {
             "fields": [

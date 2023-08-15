@@ -31,7 +31,7 @@ module LiveChat
       configuration_api_endpoints = %w(agents auto_access bots groups properties tags webhooks)
       agent_chat_api_endpoints = %w(chats threads archives events properties)
 
-      %w(agent agents auto_access bot bots chats group groups properties tags threads webhooks).each do |r|
+      %w(agent agents auto_access bot bots chats canned_responses group groups properties tags threads webhooks).each do |r|
         define_method(r.to_sym) do |*args|
           klass = LiveChat::REST.const_get restify(r.capitalize)
           n = klass.new(args[0], self)
@@ -78,10 +78,10 @@ module LiveChat
         end
       end
 
-      def request(url, params, method=:post) # most endpoints are post
+      def request(url, params, method=:post, headers=HTTP_HEADERS) # most endpoints are post
         # url.query = URI.encode_www_form(params) if [:get].include? method
         request_type = Net::HTTP.const_get method.capitalize
-        request = request_type.new url, HTTP_HEADERS
+        request = request_type.new url, headers
         request.basic_auth @login, @api_key
         request.body = params.to_json if [:post].include? method
 
