@@ -20,7 +20,7 @@ module LiveChat
         path = endpoint_path('configuration', 'update_auto_access')
         url = URI.parse(path)
         group_ids ||= -1
-        Array(group_ids).flatten! # allows api to pass Array or Integer
+        group_ids = Array(group_ids).flatten # allows api to pass Array or Integer
         body = {
             "id": auto_access_id,
             "access": {
