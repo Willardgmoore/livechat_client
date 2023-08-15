@@ -28,7 +28,6 @@ module LiveChat
             }
           }
         response = @client.request(url, body)
-        binding.pry
         JSON.parse(response.body)
       end
     end

@@ -55,7 +55,6 @@ module LiveChat
         body = {
             "all": true
         }
-        binding.pry
         response = @client.request(url, body)
         JSON.parse(response.body)
       end
